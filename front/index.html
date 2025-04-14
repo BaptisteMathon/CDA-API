@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonctionnement API</title>
+</head>
+<body>
+    <h1>Fonctionnement de l'API avec ses différents endpoints: </h1>
+    <p>Pour utiliser toutes les routes il faut être conecté (Sauf pour les routes d'inscription et de connexion 🫠)</p>
+
+    <h2>GET: </h2>
+    <div>
+        <ul>
+            <li><span>`/users`</span> Récupérer tous les utilisateurs</li>
+            <li><span>`/user/:id`</span> Récupérer un utilisateur selon son ID</li>
+            <li><span>`/posts`</span>Récupérer tous les posts</li>
+            <li><span>`/posts/user/:id`</span>Récupérer un post selon l'ID d'un user</li>
+            <li><span>`/post/:id`</span>Récupérer un post selon son ID</li>
+        </ul>
+    </div>
+
+    <h2>POST: </h2>
+    <div>
+        <ul>
+            <li><span>`/post`</span> Ajouter un nouveau post</li>
+        </ul>
+    </div>
+
+    <h2>PUT: </h2>
+    <div>
+        <ul>
+            <li><span>`/user/:id`</span> Modifier les informations d'un utilisateur</li>
+            <li><span>`/user/:id/password`</span> Modifier le mot de passe d'un utilisateur</li>
+            <li><span>`/post/like/:idPost`</span> Ajouter un like à un post</li>
+            <li><span>`/post/unlike/:idPost`</span> Supprimer un like à un post</li>
+            <li><span>`/post/comment/:idPost`</span> Ajouter un commentaire à un post</li>
+            <li><span>`/post/deleteComment/:idPost`</span> Supprimer un commentaire à un post</li>
+        </ul>
+    </div>
+
+    <h2>DELETE: </h2>
+    <div>
+        <ul>
+            <li><span>`/user/:id`</span> Supprimer un utlisateur</li>
+            <li><span>`/post/:id`</span> Supprimer un post</li>
+        </ul>
+    </div>
+
+    <h2>Authentification: (POST) </h2>
+    <div>
+        <ul>
+            <li><span>`/api/auth/signup`</span> Inscription</li>
+            <li><span>`/api/auth/signin`</span> Connexion</li>
+            <li><span>`/api/auth/signout`</span> Déconnexion</li>
+        </ul>
+    </div>
+</body>
+</html>

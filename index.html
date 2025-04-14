@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <span id="test"></span>
+
+    <script>
+        test()
+        async function test() {
+            try {
+                const res = await fetch('http://localhost:3001/', {
+                headers: {
+                    'x-access-token': token
+                }
+                });
+
+                if (res.ok) {
+                const text = await res.text();
+                test.innerText = text;
+                } else {
+                test.innerText = 'Erreur: accès refusé';
+                }
+            } catch (error) {
+                console.error('Erreur API:', error);
+                test.innerText = 'Erreur requête';
+            }
+        }
+    </script>
+</body>
+</html>
