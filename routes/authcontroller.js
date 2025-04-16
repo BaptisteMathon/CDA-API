@@ -13,7 +13,9 @@ exports.signup = async (req, res) => {
         nom: req.body.nom,
         username: req.body.username,
         password: bcrypt.hashSync(req.body.password, 10),
-        email: req.body.email
+        email: req.body.email,
+        bio: req.body.bio,
+        profile_picture: req.body.profile_picture,
     })
 
     try{
@@ -33,6 +35,8 @@ exports.signup = async (req, res) => {
             nom: user.nom,
             username: user.username,
             email: user.email,
+            bio: user.bio,
+            profile_picture: user.profile_picture,
             accesToken: token,
             message: 'User was registered successfully!'
         })
