@@ -1,7 +1,8 @@
 const Posts = require('../../models/posts');
 
 async function addPost(req, res){
-    const {image, description, tags} = req.body
+    const image = req.file ? req.file.filename : null
+    const {description, tags, owner} = req.body
 
     if(!image){
         return res.status(400).json({message: 'Image is required'})
@@ -10,7 +11,7 @@ async function addPost(req, res){
     try{
         const newPost = new Posts({
             // owner: req.UserId,
-            owner: req.body.id,
+            owner,
             image,
             description: description || '',
             tags: tags || []

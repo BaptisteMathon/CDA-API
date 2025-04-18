@@ -66,7 +66,81 @@ async function updatePassword (req, res){
     }
 }
 
+async function follow (req, res){
+    const {idToFollow} = req.params
+    const {id} = req.body
+
+    try{
+        const user = await Users.findById(id)
+
+        if(!user){
+            return res.status(404).json({message: 'User not found'})
+        }
+
+        const userToFollow = await Users.findById(idToFollow)
+        if(!userToFollow){
+            return res.status(404).json({message: 'User to foloow not found='})
+        }
+
+        user.following.push(idToFollow)
+        await user.save()
+
+        userToFollow.followers.push(id)
+        await userToFollow.save()
+
+        res.status(200).json({message: 'Follow succesful'})
+
+        
+    } catch(error){
+        console.error('Error updating follow: ', error);
+        res.status(500).json({message: 'Server error' })
+    }
+}
+
+async function unfollow (req, res){
+    const {idToUnfollow} = req.params
+    const {id} = req.body
+
+    try{
+        const user = await Users.findById(id)
+        if(!user){
+            return res.status(404).json({message: 'User not found'})
+        }
+
+        const userToUnfollow = await Users.findById(idToUnfollow)
+        console.log("idToUnfollow: ", idToUnfollow)
+        if(!userToUnfollow){
+            return res.status(404).json({message: 'User to unfollow not found'})
+        }
+
+        const indexUser = user.following.indexOf(idToUnfollow)
+        const indexUserUnfollow = userToUnfollow.followers.indexOf(id)
+
+        if(indexUser > -1){
+            user.following.splice(indexUser, 1);
+        } else {
+            return res.status(400).json({ message: 'User not found (me)' });
+        }
+
+        if(indexUserUnfollow > -1){
+            userToUnfollow.followers.splice(indexUserUnfollow, 1);
+        } else {
+            return res.status(400).json({ message: 'User not found (to unfollow)' });
+        }
+
+        await user.save()
+        await userToUnfollow.save()
+
+        res.status(200).json({message: 'Unfollow Succesful'})
+    } catch(error){
+        console.error('Error unfollowing people', error)
+        res.status(500).json({message: 'Server error'})
+    }
+}
+
 module.exports = {
     updateUser,
-    updatePassword
+    updatePassword,
+    follow,
+    unfollow
 }
