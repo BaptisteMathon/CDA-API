@@ -13,7 +13,7 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 const {getAllUsers, getUserById} = require('./routes/Users/get');
-const {getAllPosts, getPostByUserId, getPostById} = require('./routes/Posts/get');
+const {getAllPosts, getPostByUserId, getPostById, getCommentsByPostId} = require('./routes/Posts/get');
 
 const {addPost} = require('./routes/Posts/post')
 
@@ -60,11 +60,12 @@ app.get('/users', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], g
 app.get('/user/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getUserById)
 app.get('/posts', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getAllPosts)
 app.get('/posts/user/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getPostByUserId)
-app.get('/post/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getPostById)
+app.get('/post/:id', getPostById)
+app.get('/comments/:idPost', getCommentsByPostId)
 
-app.post('/post', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], uploadPost.single('publications'), addPost)
+app.post('/post', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], uploadPost.single('image'), addPost)
 
-app.put('/user/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], updateUser)
+app.put('/user/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], upload.single('profile_picture'), updateUser)
 app.put('/user/:id/password', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], updatePassword)
 app.put('/post/like/:idPost', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], addLikes)
 app.put('/post/unlike/:idPost', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], removeLikes)

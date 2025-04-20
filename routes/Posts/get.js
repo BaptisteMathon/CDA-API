@@ -36,8 +36,22 @@ async function getPostById(req, res) {
     }
 }
 
+async function getCommentsByPostId(req, res) {
+    try {
+        const post = await Posts.findById(req.params.idPost).populate('comments');
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+        res.status(200).json(post.comments);
+    } catch (error) {
+        console.error('Error fetching comments by post ID:', error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+}
+
 module.exports = {
     getAllPosts,
     getPostByUserId,
-    getPostById
+    getPostById,
+    getCommentsByPostId
 }

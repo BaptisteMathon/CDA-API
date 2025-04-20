@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 async function updateUser(req, res){
     const { id } = req.params;
-    const { prenom, nom, username, profile_picture, bio } = req.body;
+    const { prenom, nom, username, bio } = req.body;
 
     try{
         if(username){
@@ -18,7 +18,7 @@ async function updateUser(req, res){
                 prenom, 
                 nom,
                 username,
-                profile_picture,
+                profile_picture: req.body.profile_picture || req.file.filename,
                 bio
             },
             { new: true }
