@@ -32,7 +32,8 @@ exports.signup = async (req, res) => {
             password: bcrypt.hashSync(password, 10),
             email,
             bio: req.body.bio,
-            profile_picture: req.file ? req.file.filename : 'null.png',
+            // profile_picture: req.file ? req.file.filename : 'null.png',
+            profile_picture: req.body.imageUrl
         })
 
         await user.save()

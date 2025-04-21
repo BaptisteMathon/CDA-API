@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload avec Cloudinary</title>
+</head>
+<body>
+  <h1>Uploader une image</h1>
+  <input type="file" id="fileInput" />
+  <button onclick="uploadImage()">Upload</button>
+
+  <p id="url"></p>
+  <img id="preview" src="" style="max-width: 300px; display: none;" />
+
+  <script>
+    const cloudName = "dizqqbonz";
+    const unsignedUploadPreset = "frontend_upload";
+
+    async function uploadImage() {
+      const fileInput = document.getElementById("fileInput");
+      const file = fileInput.files[0];
+
+      if (!file) return alert("Choisis une image");
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", unsignedUploadPreset);
+      formData.append("folder", "mon_nouveau_dossier")
+
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      document.getElementById("url").textContent = data.secure_url;
+      const preview = document.getElementById("preview");
+      preview.src = data.secure_url;
+      preview.style.display = "block";
+    }
+  </script>
+</body>
+</html>

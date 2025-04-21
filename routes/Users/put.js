@@ -18,7 +18,8 @@ async function updateUser(req, res){
                 prenom, 
                 nom,
                 username,
-                profile_picture: req.body.profile_picture || req.file.filename,
+                // profile_picture: req.body.profile_picture || req.file.filename,
+                profile_picture: req.body.imageUrl,
                 bio
             },
             { new: true }

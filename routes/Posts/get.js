@@ -38,7 +38,7 @@ async function getPostById(req, res) {
 
 async function getCommentsByPostId(req, res) {
     try {
-        const post = await Posts.findById(req.params.idPost).populate('comments');
+        const post = await Posts.findById(req.params.idPost);
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
