@@ -92,13 +92,13 @@ app.get('/', [rateLimitMiddleware], (req, res) => {
 });
 
 app.get('/users', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getAllUsers)
-app.get('/user/:id', getUserById)
+app.get('/user/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getUserById)
 app.get('/posts', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getAllPosts)
-app.get('/posts/user/:id', getPostByUserId)
-app.get('/post/:id', getPostById)
-app.get('/comments/:idPost', getCommentsByPostId)
-app.get('/allFollowers/:id', getUserFollowers)
-app.get('/allFollowings/:id', getUserFollowing)
+app.get('/posts/user/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getPostByUserId)
+app.get('/post/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getPostById)
+app.get('/comments/:idPost', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getCommentsByPostId)
+app.get('/allFollowers/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getUserFollowers)
+app.get('/allFollowings/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], getUserFollowing)
 
 app.post('/post', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], upload.single('image'), cloudinaryUpload('publications', 'imageUrl'), addPost)
 
