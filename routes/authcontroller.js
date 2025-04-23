@@ -150,7 +150,7 @@ exports.googleOAuthRedirect = async (req, res) => {
         prenom: prenomUser,
         nom: nomUser || "Utilisateur Google",
         email: email,
-        username: name,
+        username: email,
         password: crypto.randomBytes(16).toString("hex"), 
         profile_picture: picture,
       });
