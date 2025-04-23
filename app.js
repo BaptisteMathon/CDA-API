@@ -119,6 +119,7 @@ app.delete('/post/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddlewa
 app.post('/api/auth/signup', rateLimitMiddleware, upload.single('profile_picture'), cloudinaryUpload('profile_picture', 'imageUrl'), authcontroller.signup);
 app.post('/api/auth/signin', [rateLimitMiddleware], authcontroller.signin);
 app.post('/api/auth/signout', [rateLimitMiddleware], authcontroller.signout);
+app.get('/auth/google/callback', authcontroller.googleOAuthRedirect)
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

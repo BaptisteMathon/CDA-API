@@ -105,6 +105,73 @@ exports.signin = async (req, res) => {
     }
 }
 
+
+const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
+const jwtSecret = config.secret || "default_secret";
+
+exports.googleOAuthRedirect = async (req, res) => {
+  try {
+    const { code } = req.query;
+    if (!code) {
+      return res.status(400).send("Code d'autorisation manquant.");
+    }
+
+    const response = await axios.post(GOOGLE_TOKEN_URL, null, {
+      params: {
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: process.env.GOOGLE_REDIRECT_URL,
+        grant_type: "authorization_code",
+        code,
+      },
+    });
+
+    const accessToken = response.data.access_token;
+    if (!accessToken) {
+      return res.status(400).send("Impossible d'obtenir un token d'accès.");
+    }
+
+    const userData = await axios.get(GOOGLE_USERINFO_URL, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    console.log("data : ", userData.data)
+
+    const { name, email, picture } = userData.data;
+    
+    const fullName = name.split(" ")
+    const prenomUser = fullName[0]
+    const nomUser = fullName[1]
+
+    let user = await User.findOne({ email: email });
+    if (!user) {
+      user = new User({
+        prenom: prenomUser,
+        nom: nomUser || "Utilisateur Google",
+        email: email,
+        username: name,
+        password: crypto.randomBytes(16).toString("hex"), 
+        profile_picture: picture,
+      });
+      await user.save();
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, password: user.password },
+      jwtSecret,
+      { algorithm: "HS256", expiresIn: "24h" }
+    );
+ 
+    res.cookie("access_token", token, { httpOnly: true, secure: false });
+    res.redirect(`http://localhost:5173/?token=${token}`);
+  } catch (err) {
+    console.error("Erreur serveur :", err);
+    res.status(500).send("Erreur interne du serveur");
+  }  
+};
+
+
 exports.signout = (req, res) => {
     res.cookie('jwt', '', {maxAge: 1});
     res.send({message: 'Logged out successfully!'});
