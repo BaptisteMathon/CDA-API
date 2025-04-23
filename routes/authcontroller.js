@@ -164,7 +164,9 @@ exports.googleOAuthRedirect = async (req, res) => {
     );
  
     res.cookie("access_token", token, { httpOnly: true, secure: false });
-    res.redirect(`http://localhost:5173/?token=${token}`);
+    
+    res.redirect(`https://insta-cars.vercel.app/?token=${token}`);
+    // res.redirect(`http://localhost:5173/?token=${token}`);
   } catch (err) {
     console.error("Erreur serveur :", err);
     res.status(500).send("Erreur interne du serveur");
