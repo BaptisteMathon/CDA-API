@@ -30,10 +30,10 @@ exports.signup = async (req, res) => {
             nom,
             username,
             password: bcrypt.hashSync(password, 10),
-            email,
+            email: email.toLowerCase(),
             bio: req.body.bio,
             // profile_picture: req.file ? req.file.filename : 'null.png',
-            profile_picture: req.body.imageUrl
+            profile_picture: req.body.imageUrl || "https://res.cloudinary.com/dizqqbonz/image/upload/v1745396944/profile_picture/t7f0rlkfiygvc5j9ofef.png"
         })
 
         await user.save()
@@ -66,9 +66,12 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
     try{
 
-        const user = await User.findOne({email: req.body.email});
+        const emailLowerCase = req.body.email.toLowerCase()
+
+        // const user = await User.findOne({email: req.body.email});
+        const user = await User.findOne({email: emailLowerCase});
         if (!user) {
-            return res.status(404).json({ accesToken: null, message: 'Adresse mail inconnue' })
+            return res.status(404).json({ accesToken: null, message: `Adresse mail inconnue ${emailLowerCase}` })
         }
     
         let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
@@ -80,7 +83,7 @@ exports.signin = async (req, res) => {
             })
         }
     
-        const token = jwt.sign({id: user._id, email: user.email},
+        const token = jwt.sign({id: user._id, email: emailLowerCase},
             config.secret, {
                 algorithm: 'HS256',
                 allowInsecureKeySizes: true,
@@ -92,7 +95,7 @@ exports.signin = async (req, res) => {
             id: user._id,
             prenom: user.prenom,
             nom: user.nom,
-            email: user.email,
+            email: emailLowerCase,
             accesToken: token,
             message: 'User was registered successfully!'
         })

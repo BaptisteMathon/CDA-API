@@ -74,7 +74,9 @@ function cloudinaryUpload(folder = '', fieldName = 'imageUrl') {
     return async (req, res, next) => {
         try{
             if (!req.file || !req.file.buffer) {
-                return res.status(400).json({ error: 'No file provided' });
+                // return res.status(400).json({ error: 'No file provided' });
+                req.body[fieldName] = "https://res.cloudinary.com/dizqqbonz/image/upload/v1745396944/profile_picture/t7f0rlkfiygvc5j9ofef.png"
+                return next()
             }
     
             const result = await uploadToCloudinary(req.file.buffer, folder);

@@ -21,6 +21,16 @@ async function deleteUser(req, res){
             { likes: id },
             { $pull: { likes: id } }
         );
+
+        await Users.updateMany(
+            { followers: id },
+            { $pull: { followers: id } }
+        );
+
+        await Users.updateMany(
+            { followings: id },
+            { $pull: { followings: id } }
+        );
     
         res.status(200).json({ message: 'User deleted successfully' });
     } catch(error) {
