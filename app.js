@@ -52,7 +52,10 @@ const rateLimitMiddleware = require('./middlewares/rateLimiter');
 // const uploadPost = multer({ storage: secondStorage })
 
 const storage = multer.memoryStorage()
-const upload = multer({storage})
+const upload = multer({
+    storage,
+    limits: {fileSize: 25 * 1024 * 1024}
+})
 
 mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log('MongoDB connected'))
