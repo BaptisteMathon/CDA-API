@@ -12,7 +12,7 @@ const cloudinary = require('./config/cloudinary')
 app.use(cors());
 dotenv.config();
 app.use(express.json());
-app.set('trust proxy', 1)
+app.set('trust proxy', true)
 // app.use('/uploads', express.static('uploads'));
 
 const {getAllUsers, getUserById, getUserFollowers, getUserFollowing} = require('./routes/Users/get');
