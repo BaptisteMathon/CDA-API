@@ -67,12 +67,12 @@ async function updatePassword (req, res){
 
         const isMatching = await bcrypt.compare(oldPassword, user.password);
         if(!isMatching){
-            return res.status(400).json({ message: 'Old password is incorrect' });
+            return res.status(400).json({ message: "L'ancien mot de passe est incorrect" });
         }
 
         const isSamePassword = await bcrypt.compare(newPassword, user.password);
         if(isSamePassword){
-            return res.status(400).json({ message: 'New password cannot be the same as old password' });
+            return res.status(400).json({ message: "Le nouveau mot de passe ne peut pas être similaire à l'ancien" });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
