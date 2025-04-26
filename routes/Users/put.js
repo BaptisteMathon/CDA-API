@@ -9,7 +9,7 @@ async function updateUser(req, res){
         if(username){
             const existingUser = await Users.findOne({ username });
             if(existingUser && (existingUser.username.toLocaleLowerCase() === username.toLocaleLowerCase())){
-                return res.status(400).json({ message: 'Username already exists' });
+                return res.status(400).json({ message: "Le nom d'utilisateur existe déjà" });
             }
         }
         // console.log(req.body.imageUrl)
