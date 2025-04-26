@@ -8,11 +8,11 @@ async function updateUser(req, res){
     try{
         if(username){
             const existingUser = await Users.findOne({ username });
-            if(existingUser && existingUser._id.toString() !== id){
+            if(existingUser && (existingUser.username.toLocaleLowerCase() === username.toLocaleLowerCase())){
                 return res.status(400).json({ message: 'Username already exists' });
             }
         }
-        console.log(req.body.imageUrl)
+        // console.log(req.body.imageUrl)
         let updatedUser
         if(req.body.imageUrl === "https://res.cloudinary.com/dizqqbonz/image/upload/v1745396944/profile_picture/t7f0rlkfiygvc5j9ofef.png"){
             // console.log("image non changé")
