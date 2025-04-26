@@ -12,18 +12,37 @@ async function updateUser(req, res){
                 return res.status(400).json({ message: 'Username already exists' });
             }
         }
-        const updatedUser = await Users.findByIdAndUpdate(
-            id, 
-            {
-                prenom, 
-                nom,
-                username,
-                // profile_picture: req.body.profile_picture || req.file.filename,
-                profile_picture: req.body.imageUrl,
-                bio
-            },
-            { new: true }
-        );
+        console.log(req.body.imageUrl)
+        let updatedUser
+        if(req.body.imageUrl === "https://res.cloudinary.com/dizqqbonz/image/upload/v1745396944/profile_picture/t7f0rlkfiygvc5j9ofef.png"){
+            // console.log("image non changé")
+            updatedUser = await Users.findByIdAndUpdate(
+                id, 
+                {
+                    prenom, 
+                    nom,
+                    username,
+                    // profile_picture: req.body.profile_picture || req.file.filename,
+                    // profile_picture: req.body.imageUrl,
+                    bio
+                },
+                { new: true }
+            );
+        } else {
+            // console.log("image changé")
+            updatedUser = await Users.findByIdAndUpdate(
+                id, 
+                {
+                    prenom, 
+                    nom,
+                    username,
+                    // profile_picture: req.body.profile_picture || req.file.filename,
+                    profile_picture: req.body.imageUrl,
+                    bio
+                },
+                { new: true }
+            );
+        }
 
         if(!updatedUser){
             return res.status(404).json({ message: 'User not found' });
