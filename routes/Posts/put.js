@@ -1,4 +1,3 @@
-const { all } = require('axios');
 const Posts = require('../../models/posts');
 const Users = require('../../models/users');
 

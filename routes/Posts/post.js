@@ -1,8 +1,6 @@
 const Posts = require('../../models/posts');
 
 async function addPost(req, res) {
-    console.log('BODY:', req.body);
-    console.log('FILE:', req.file);
     const imageUrl = req.body.imageUrl || null;
     const { description, owner } = req.body;
     let tags = req.body.tags
