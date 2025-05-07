@@ -87,7 +87,7 @@ exports.signin = async (req, res) => {
             config.secret, {
                 algorithm: 'HS256',
                 allowInsecureKeySizes: true,
-                expiresIn: 86400 // 24 heures
+                // expiresIn: 86400 // 24 heures
             }
         )
     
@@ -160,7 +160,7 @@ exports.googleOAuthRedirect = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, password: user.password },
       jwtSecret,
-      { algorithm: "HS256", expiresIn: "24h" }
+      { algorithm: "HS256" }
     );
  
     res.cookie("access_token", token, { httpOnly: true, secure: false });
