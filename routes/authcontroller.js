@@ -143,7 +143,9 @@ exports.googleOAuthRedirect = async (req, res) => {
         const fullName = name.split(" ")
         const prenomUser = fullName[0]
         const nomUser = fullName[1]
-        let username = email.replace('@gmail.com', '')
+
+        const indexOfAt = email.indexOf('@');
+        let username = email.substring(0, indexOfAt);
 
         if(username.length > 20){
             username = username.substring(0, 20)
