@@ -23,7 +23,7 @@ const {addForum} = require('./routes/Forum/post')
 
 const {updateUser, updatePassword, follow, unfollow} = require('./routes/Users/put')
 const {addLikes, removeLikes, addComments, removeComments} = require('./routes/Posts/put')
-const {addContentForum, deleteContentForum} = require('./routes/Forum/put')
+const {addContentForum, deleteContentForum, addImageForum} = require('./routes/Forum/put')
 
 const {deleteUser} = require('./routes/Users/delete')
 const {deletePost} = require('./routes/Posts/delete')
@@ -124,6 +124,7 @@ app.put('/follow/:idToFollow', [authJwt.verifyToken, authJwt.isExist, rateLimitM
 app.put('/unfollow/:idToUnfollow', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], unfollow)
 app.put('/newMessage/:idForum', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], addContentForum)
 app.put('/deleteMessage/:idForum', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], deleteContentForum)
+app.put('/addingImage/:idForum', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], upload.single('image'), cloudinaryUpload('forum', 'imageUrl'), addImageForum)
 
 app.delete('/user/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], deleteUser)
 app.delete('/post/:id', [authJwt.verifyToken, authJwt.isExist, rateLimitMiddleware], deletePost)

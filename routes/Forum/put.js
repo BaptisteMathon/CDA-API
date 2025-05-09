@@ -61,7 +61,42 @@ async function deleteContentForum(req, res){
     }
 }
 
+async function addImageForum(req, res){
+    const { idForum } = req.params;
+    const { user, imageUrl } = req.body;
+
+    try{
+        const forum = await Forum.findById(idForum);
+        if(!forum){
+            return res.status(404).json({ message: 'Forum not found' });
+        }
+
+        const userExists = await Users.findById(user);
+        if(!userExists){
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if(!imageUrl){
+            return res.status(400).json({ message: 'Image is required' });
+        }
+
+        const newImage = {
+            user: String(user),
+            message: imageUrl
+        }
+
+        forum.forumContent.push(newImage);
+
+        await forum.save();
+        res.status(200).json({ message: 'Image added successfully', forum });
+    } catch(error){
+        console.error('Error adding image:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
 module.exports = {
     addContentForum,
-    deleteContentForum
+    deleteContentForum,
+    addImageForum
 }
