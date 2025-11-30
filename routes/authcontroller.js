@@ -3,27 +3,34 @@ let bcrypt = require('bcrypt');
 const config = require('../config/keys');
 let jwt = require('jsonwebtoken');
 
+const sanitizeHtml = require('sanitize-html');
+
 // for oauth
 const crypto = require('crypto');
 const axios = require('axios');
 
-exports.signup = async (req, res) => {    
-    try{
+exports.signup = async (req, res) => {
+    try {
 
-        const {prenom, nom, username, password, email} = req.body
+        const { prenom, nom, username, password, email } = req.body
         if (!prenom || !nom || !username || !password || !email) {
-            return res.status(400).json({message: 'Les champs Prénoms, Nom, Nom d\'utilisateur, Mot de passe et Email sont obligatoires'})
+            return res.status(400).json({ message: 'Les champs Prénoms, Nom, Nom d\'utilisateur, Mot de passe et Email sont obligatoires' })
         }
 
         const existingUserEmail = await User.findOne({ email })
         if (existingUserEmail) {
-            return res.status(400).json({message: 'Cette adresse email est déjà utilisée'})
+            return res.status(400).json({ message: 'Cette adresse email est déjà utilisée' })
         }
 
         const existingUserUsername = await User.findOne({ username })
         if (existingUserUsername) {
-            return res.status(400).json({message: 'Ce nom d\'utilisateur est déjà utilisé'})
+            return res.status(400).json({ message: 'Ce nom d\'utilisateur est déjà utilisé' })
         }
+
+        const bioSanitize = sanitizeHtml(req.body.bio, {
+            allowedTags: [],
+            allowedAttributes: []
+        })
 
         const user = new User({
             prenom,
@@ -31,19 +38,19 @@ exports.signup = async (req, res) => {
             username,
             password: bcrypt.hashSync(password, 10),
             email: email.toLowerCase(),
-            bio: req.body.bio,
+            bio: bioSanitize,
             // profile_picture: req.file ? req.file.filename : 'null.png',
             profile_picture: req.body.imageUrl || "https://res.cloudinary.com/dizqqbonz/image/upload/v1745396944/profile_picture/t7f0rlkfiygvc5j9ofef.png"
         })
 
         await user.save()
 
-        const token = jwt.sign({id: user._id, email: user.email},
+        const token = jwt.sign({ id: user._id, email: user.email },
             config.secret, {
-                algorithm: 'HS256',
-                allowInsecureKeySizes: true,
-                // expiresIn: 86400 // 24 heures
-            }
+            algorithm: 'HS256',
+            allowInsecureKeySizes: true,
+            // expiresIn: 86400 // 24 heures
+        }
         )
 
         res.status(200).send({
@@ -57,40 +64,40 @@ exports.signup = async (req, res) => {
             accesToken: token,
             message: 'User was registered successfully!'
         })
-    } catch(err){
+    } catch (err) {
         console.error(err)
-        res.status(500).json({message: 'Erreur lors de la création du compte', error: err.message})
+        res.status(500).json({ message: 'Erreur lors de la création du compte', error: err.message })
     }
 }
 
 exports.signin = async (req, res) => {
-    try{
+    try {
 
         const emailLowerCase = req.body.email.toLowerCase()
 
         // const user = await User.findOne({email: req.body.email});
-        const user = await User.findOne({email: emailLowerCase});
+        const user = await User.findOne({ email: emailLowerCase });
         if (!user) {
             return res.status(404).json({ accesToken: null, message: `Adresse mail inconnue ${emailLowerCase}` })
         }
-    
+
         let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-    
-        if(!passwordIsValid){
+
+        if (!passwordIsValid) {
             return res.status(401).send({
                 accesToken: null,
                 message: 'Mot de passe incorrect'
             })
         }
-    
-        const token = jwt.sign({id: user._id, email: emailLowerCase},
+
+        const token = jwt.sign({ id: user._id, email: emailLowerCase },
             config.secret, {
-                algorithm: 'HS256',
-                allowInsecureKeySizes: true,
-                // expiresIn: 86400 // 24 heures
-            }
+            algorithm: 'HS256',
+            allowInsecureKeySizes: true,
+            // expiresIn: 86400 // 24 heures
+        }
         )
-    
+
         res.status(200).send({
             id: user._id,
             prenom: user.prenom,
@@ -99,9 +106,9 @@ exports.signin = async (req, res) => {
             accesToken: token,
             message: 'User was registered successfully!'
         })
-    } catch(error){
+    } catch (error) {
         console.error(error)
-        res.status(500).json({message: 'Erreur lors de la connexion', error: error.message})
+        res.status(500).json({ message: 'Erreur lors de la connexion', error: error.message })
     }
 }
 
@@ -139,7 +146,7 @@ exports.googleOAuthRedirect = async (req, res) => {
         console.log("data : ", userData.data)
 
         const { name, email, picture } = userData.data;
-        
+
         const fullName = name.split(" ")
         const prenomUser = fullName[0]
         const nomUser = fullName[1]
@@ -147,7 +154,7 @@ exports.googleOAuthRedirect = async (req, res) => {
         const indexOfAt = email.indexOf('@');
         let username = email.substring(0, indexOfAt);
 
-        if(username.length > 20){
+        if (username.length > 20) {
             username = username.substring(0, 20)
         }
 
@@ -158,7 +165,7 @@ exports.googleOAuthRedirect = async (req, res) => {
                 nom: nomUser || "Utilisateur Google",
                 email: email,
                 username,
-                password: crypto.randomBytes(16).toString("hex"), 
+                password: crypto.randomBytes(16).toString("hex"),
                 profile_picture: picture,
             });
             await user.save();
@@ -169,19 +176,19 @@ exports.googleOAuthRedirect = async (req, res) => {
             jwtSecret,
             { algorithm: "HS256" }
         );
-    
+
         res.cookie("access_token", token, { httpOnly: true, secure: false });
-        
+
         res.redirect(`https://insta-cars.vercel.app/?token=${token}`);
         // res.redirect(`http://localhost:5173/?token=${token}`);
     } catch (err) {
         console.error("Erreur serveur :", err);
         res.status(500).send("Erreur interne du serveur");
-    }  
+    }
 };
 
 
 exports.signout = (req, res) => {
-    res.cookie('jwt', '', {maxAge: 1});
-    res.send({message: 'Logged out successfully!'});
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.send({ message: 'Logged out successfully!' });
 }

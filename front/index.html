@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fonctionnement API</title>
 </head>
+<style>
+    span {
+        text-decoration: underline;
+    }
+</style>
 <body>
     <h1>Fonctionnement de l'API avec ses différents endpoints: </h1>
     <p>Pour utiliser toutes les routes il faut être conecté (Sauf pour les routes d'inscription et de connexion 🫠)</p>
@@ -17,6 +22,11 @@
             <li><span>`/posts`</span>Récupérer tous les posts</li>
             <li><span>`/posts/user/:id`</span>Récupérer un post selon l'ID d'un user</li>
             <li><span>`/post/:id`</span>Récupérer un post selon son ID</li>
+            <li><span>`/comments/:idPos`</span>Récupérer tous les commentaires d'une publication</li>
+            <li><span>`/allFollowers/:id`</span>Récupérer tous les abonnés d'un utilisateur</li>
+            <li><span>`/allFollowings/:id`</span>Récupérer tous les abonnements d'un utilisateur</li>
+            <li><span>`/allForums`</span>Récupérer tous les forums</li>
+            <li><span>`/forum/:id`</span>Récupérer le contenu d'un forum selon son ID</li>
         </ul>
     </div>
 
@@ -24,6 +34,7 @@
     <div>
         <ul>
             <li><span>`/post`</span> Ajouter un nouveau post</li>
+            <li><span>`/forum`</span>Création d'un nouveau forum</li>
         </ul>
     </div>
 
@@ -36,6 +47,11 @@
             <li><span>`/post/unlike/:idPost`</span> Supprimer un like à un post</li>
             <li><span>`/post/comment/:idPost`</span> Ajouter un commentaire à un post</li>
             <li><span>`/post/deleteComment/:idPost`</span> Supprimer un commentaire à un post</li>
+            <li><span>`/follow/:idToFollow`</span> Suivre une personne selon son ID</li>
+            <li><span>`/unfollow/:idToUnfollow`</span> Se désabonner d'une personne selon son ID</li>
+            <li><span>`/newMessage/:idForum`</span> Ajouter un message sur un forum, selon l'ID du forum</li>
+            <li><span>`/deleteMessage/:idForum`</span> Supprimer un message d'un forum, selon l'ID du forum</li>
+            <li><span>`/addingImage/:idForum`</span> Ajouter une image dans un forum, selon l'ID du forum</li>
         </ul>
     </div>
 
@@ -44,6 +60,7 @@
         <ul>
             <li><span>`/user/:id`</span> Supprimer un utlisateur</li>
             <li><span>`/post/:id`</span> Supprimer un post</li>
+            <li><span>`/forum/:id`</span> Supprimer un forum</li>
         </ul>
     </div>
 
