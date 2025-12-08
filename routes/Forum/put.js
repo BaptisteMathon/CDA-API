@@ -1,53 +1,61 @@
 const Forum = require('../../models/forum');
 const Users = require('../../models/users');
 
-async function addContentForum(req, res){
+const sanitizeHtml = require('sanitize-html');
+
+
+async function addContentForum(req, res) {
     const { idForum } = req.params;
     const { user, message } = req.body;
 
-    try{
+    try {
         const forum = await Forum.findById(idForum);
-        if(!forum){
+        if (!forum) {
             return res.status(404).json({ message: 'Forum not found' });
         }
 
         const userExists = await Users.findById(user);
-        if(!userExists){
+        if (!userExists) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        if(!message){
+        if (!message) {
             return res.status(400).json({ message: 'Message is required' });
         }
 
+        const messageSanitize = sanitizeHtml(message, {
+            allowedTags: [],
+            allowedAttributes: []
+        })
+
         const newMessage = {
             user: String(user),
-            message: message
+            message: messageSanitize
         }
 
         forum.forumContent.push(newMessage);
 
         await forum.save();
         res.status(200).json({ message: 'Message added successfully', forum });
-    } catch(error){
+    } catch (error) {
         console.error('Error adding message:', error);
         res.status(500).json({ message: 'Server error' });
     }
 }
 
-async function deleteContentForum(req, res){
+async function deleteContentForum(req, res) {
     const { idForum } = req.params;
     const { idMessage } = req.body;
 
-    try{
+    try {
         const forum = await Forum.findById(idForum);
-        if(!forum){
-            return res.status(404).json({message: 'Forum not found'});
+        if (!forum) {
+            return res.status(404).json({ message: 'Forum not found' });
         }
 
         const allIdMessages = forum.forumContent.map(message => message._id.toString());
         const index = allIdMessages.indexOf(idMessage);
-        if(index > -1){
+        if (index > -1) {
             forum.forumContent.splice(index, 1);
         } else {
             return res.status(400).json({ message: 'Message not found' });
@@ -55,28 +63,28 @@ async function deleteContentForum(req, res){
 
         await forum.save();
         res.status(200).json({ message: 'Message removed successfully', forum });
-    } catch(error){
+    } catch (error) {
         console.error('Error removing message: ', error);
         res.status(500).json({ message: 'Server error' });
     }
 }
 
-async function addImageForum(req, res){
+async function addImageForum(req, res) {
     const { idForum } = req.params;
     const { user, imageUrl } = req.body;
 
-    try{
+    try {
         const forum = await Forum.findById(idForum);
-        if(!forum){
+        if (!forum) {
             return res.status(404).json({ message: 'Forum not found' });
         }
 
         const userExists = await Users.findById(user);
-        if(!userExists){
+        if (!userExists) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        if(!imageUrl){
+        if (!imageUrl) {
             return res.status(400).json({ message: 'Image is required' });
         }
 
@@ -89,7 +97,7 @@ async function addImageForum(req, res){
 
         await forum.save();
         res.status(200).json({ message: 'Image added successfully', forum });
-    } catch(error){
+    } catch (error) {
         console.error('Error adding image:', error);
         res.status(500).json({ message: 'Server error' });
     }
