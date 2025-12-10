@@ -36,9 +36,9 @@ exports.signup = async (req, res) => {
         // Interdit: Chiffres et caractères spéciaux
         const nameRegex = /^[a-zA-ZÀ-ÿ\s-]+$/;
         // Autorise: Lettres, chiffres, tirets et underscores
-        // Interdit: Espaces et caractères spéciaux
+        // Interdit: caractères spéciaux
         // Longueur: entre 3 et 20 caractères
-        const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
+        const usernameRegex = /^[a-zA-Z0-9_-\s]{3,20}$/;
 
         if (!nameRegex.test(prenom) || !nameRegex.test(nom)) {
             return res.status(400).json({ message: 'Les champs Prénoms et Nom doivent contenir uniquement des lettres, des accents, des espaces et des tirets' })
