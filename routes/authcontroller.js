@@ -45,7 +45,7 @@ exports.signup = async (req, res) => {
         }
 
         if (!usernameRegex.test(username)) {
-            return res.status(400).json({ message: 'Le nom d\'utilisateur doit contenir uniquement des lettres, des chiffres, des tirets et des underscores' })
+            return res.status(400).json({ message: 'Le nom d\'utilisateur doit contenir uniquement des lettres, des chiffres, des tirets et des underscores. Et doit contenir entre 3 et 20 caractères' })
         }
 
         const user = new User({
